@@ -30,17 +30,64 @@
 
 - 預計使用 Tauri/Electron 封裝，將 Web Provider 的渲染邏輯與本地 Rust/Node-PTY IPC 直接串接。
 
+## 專案結構 (Project Structure)
+
+```
+tinyterm/
+├── packages/
+│   ├── core/               # @tinyterm/core — 純邏輯層，平台無關
+│   │   └── src/
+│   │       ├── types.ts          # ITerminalCore, IRenderEvent, CellData, Range
+│   │       ├── terminal-core.ts  # TerminalCore 實作，封裝 @xterm/headless
+│   │       └── index.ts
+│   └── web/                # @tinyterm/web — Web 表現層
+│       └── src/
+│           ├── types.ts          # IRendererConfig, IBridgeConfig
+│           ├── renderer.ts       # CanvasRenderer — Canvas 字元矩陣渲染
+│           ├── bridge.ts         # WebSocketBridge — 瀏覽器端 WebSocket 中繼
+│           ├── server.ts         # PTY Server — node-pty + ws (獨立入口)
+│           └── index.ts
+├── docs/
+│   └── specs/              # 各功能模組的實作規格文件
+├── architecture.md         # 核心介面設計文件
+├── tsconfig.json           # TypeScript 6.0 base config (nodenext)
+└── pnpm-workspace.yaml
+```
+
 ## 技術棧 (Tech Stack)
 
-- Language: TypeScript
+- Language: TypeScript 6.0
 - Backend: Node.js, node-pty, ws (WebSocket)
-- Frontend Logic: xterm.js (Headless)
+- Frontend Logic: xterm.js (Headless) — `@xterm/headless`
 - Frontend View: HTML5 Canvas API
+- Package Manager: pnpm (workspace monorepo)
+
+## 開發設定 (Development Setup)
+
+```bash
+# 安裝依賴
+pnpm install
+
+# 編譯所有套件
+pnpm build
+
+# 型別檢查
+pnpm typecheck
+
+# 清除編譯產物
+pnpm clean
+```
 
 ## 實作進度 (Development Roadmap)
 
-- [ ] 建立 Node.js PTY Server 基礎通訊。
-- [ ] 實作 Core Interface 與 Headless xterm.js 整合。
-- [ ] 開發 Canvas 字元矩陣渲染器（支援色彩與游標）。
-- [ ] 效能挑戰： 實作 Push-based 局部更新機制，優化大流量輸出時的 FPS。
-- [ ] 支援 CJK 寬字元與 Emoji 顯示。
+- [x] 初始化 pnpm monorepo 架構與 TypeScript 6.0 設定
+- [x] 定義核心介面：`ITerminalCore`, `IRenderEvent`, `CellData`
+- [x] 實作 `TerminalCore` 骨架（封裝 `@xterm/headless`，push-based render 通知）
+- [x] 實作 `CanvasRenderer` 骨架（Canvas 字元繪製框架）
+- [x] 實作 `WebSocketBridge` 骨架（瀏覽器端 WebSocket）
+- [x] 建立 Node.js PTY Server 骨架（node-pty + ws）
+- [ ] 實作 PTY Server 完整功能（resize 同步、binary 支援）
+- [ ] 實作正確的 xterm 色彩提取（256色、24-bit RGB）
+- [ ] 完成 Canvas 渲染器（游標繪製、字型度量）
+- [ ] 效能優化：實作 Dirty Rectangles 局部更新機制
+- [ ] 支援 CJK 寬字元與 Emoji 顯示
