@@ -1,0 +1,22 @@
+{
+  "name": "tinyterm",
+  "version": "1.0.0",
+  "license": "MIT",
+  "description": "A minimal terminal emulator implementation for educational purposes. Exploring terminal internal workings, pseudo-terminal (PTY) communication, and terminal GUI rendering.",
+  "author": "arthur-mountain",
+  "packageManager": "pnpm@10.30.0",
+  "keywords": [
+    ""
+  ],
+  "files": [
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {},
+  "homepage": "https://github.com/arthur-mountain/tinyterm",
+  "bugs": "https://github.com/arthur-mountain/tinyterm/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arthur-mountain/tinyterm.git"
+  }
+}
