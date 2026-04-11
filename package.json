@@ -1,18 +1,24 @@
 {
   "name": "tinyterm",
   "version": "1.0.0",
+  "private": true,
+  "type": "module",
   "license": "MIT",
   "description": "A minimal terminal emulator implementation for educational purposes. Exploring terminal internal workings, pseudo-terminal (PTY) communication, and terminal GUI rendering.",
   "author": "arthur-mountain",
   "packageManager": "pnpm@10.30.0",
-  "keywords": [
-    ""
-  ],
-  "files": [
-    "LICENSE",
-    "README.md"
-  ],
-  "scripts": {},
+  "keywords": ["terminal", "emulator", "pty", "canvas", "xterm"],
+  "scripts": {
+    "build": "pnpm -r run build",
+    "clean": "pnpm -r run clean",
+    "typecheck": "pnpm -r run typecheck"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["node-pty"]
+  },
   "homepage": "https://github.com/arthur-mountain/tinyterm",
   "bugs": "https://github.com/arthur-mountain/tinyterm/issues",
   "repository": {
