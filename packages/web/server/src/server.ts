@@ -1,12 +1,15 @@
 import crypto from "node:crypto";
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import type { IncomingMessage } from "node:http";
 import { WebSocketServer } from "ws";
 import pty from "node-pty";
-import { buildSafeEnv, createRateLimiter, validateMessage } from "./security.js";
+import { buildSafeEnv, createRateLimiter, validateMessage, parseResizeMessage } from "./security.js";
 
-const PORT = process.env["PORT"] ? parseInt(process.env["PORT"], 10) : 3001;
+const PORT = process.env["PORT"] ? parseInt(process.env["PORT"], 10) : 3002;
+// In Docker HOST must be 0.0.0.0; port-mapping handles external access restriction.
+const HOST = process.env["HOST"] ?? "127.0.0.1";
 const SHELL = process.env["SHELL"] ?? "/bin/zsh";
 
 // Origins allowed to connect — must match the Vite dev server origin.
@@ -20,7 +23,9 @@ const IDLE_TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
 const MAX_MESSAGES_PER_SECOND = 200;
 
 const AUTH_TOKEN = crypto.randomBytes(32).toString("hex");
-const TOKEN_FILE = path.resolve(import.meta.dirname, "../../../../.tinyterm-token");
+// TOKEN_FILE env var lets Docker write the token to a bind-mounted host path.
+const TOKEN_FILE = process.env["TOKEN_FILE"]
+  ?? path.resolve(import.meta.dirname, "../../../../.tinyterm-token");
 fs.writeFileSync(TOKEN_FILE, AUTH_TOKEN, { encoding: "utf-8", mode: 0o600 });
 
 function verifyClient(info: {
@@ -35,7 +40,22 @@ function verifyClient(info: {
 
 const SAFE_ENV = buildSafeEnv(process.env as Record<string, string | undefined>);
 
-const wss = new WebSocketServer({ host: "127.0.0.1", port: PORT, verifyClient });
+const wss = new WebSocketServer({ host: HOST, port: PORT, verifyClient });
+
+// Explicit cwd prevents posix_spawnp failures when the process cwd is inaccessible.
+// /tmp is always accessible and avoids implying a sensitive starting directory.
+function spawnPty(
+  shell: string,
+  env: Record<string, string>,
+): ReturnType<typeof pty.spawn> {
+  return pty.spawn(shell, [], {
+    name: "xterm-256color",
+    cols: 80,
+    rows: 24,
+    cwd: os.tmpdir(),
+    env,
+  });
+}
 
 wss.on("connection", (ws) => {
   // wss.clients already includes this new socket by connection time.
@@ -44,12 +64,13 @@ wss.on("connection", (ws) => {
     return;
   }
 
-  const shell = pty.spawn(SHELL, [], {
-    name: "xterm-256color",
-    cols: 80,
-    rows: 24,
-    env: SAFE_ENV,
-  });
+  let shell: ReturnType<typeof pty.spawn>;
+  try { shell = spawnPty(SHELL, SAFE_ENV); }
+  catch (err) {
+    console.error("PTY spawn failed:", err);
+    ws.close(1011, "PTY spawn failed");
+    return;
+  }
 
   let idleTimer = setTimeout(() => ws.close(1000, "Idle timeout"), IDLE_TIMEOUT_MS);
 
@@ -74,6 +95,8 @@ wss.on("connection", (ws) => {
     resetIdleTimer();
     const msg = validateMessage(data);
     if (msg === null) return;
+    const resize = parseResizeMessage(msg);
+    if (resize) { shell.resize(resize.cols, resize.rows); return; }
     shell.write(msg);
   });
 
@@ -88,4 +111,4 @@ wss.on("connection", (ws) => {
   });
 });
 
-console.log(`PTY server listening on ws://127.0.0.1:${PORT}`);
+console.log(`PTY server listening on ws://${HOST}:${PORT}`);

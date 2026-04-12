@@ -9,7 +9,8 @@ export class TerminalCore implements ITerminalCore {
   private renderCallbacks: Array<(event: IRenderEvent) => void> = [];
 
   constructor(cols = DEFAULT_COLS, rows = DEFAULT_ROWS) {
-    this.terminal = new Terminal({ cols, rows });
+    // allowProposedApi is required to access terminal.buffer (proposed API).
+    this.terminal = new Terminal({ cols, rows, allowProposedApi: true });
   }
 
   write(data: string): void {

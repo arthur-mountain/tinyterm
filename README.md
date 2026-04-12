@@ -23,7 +23,7 @@
 ### 2. 表現層 (/packages/web)
 
 - **client** (`@tinyterm/client`): Canvas Grid Rendering、WebSocket Bridge、鍵盤事件處理。
-- **server** (`@tinyterm/server`): node-pty + WebSocket Server，橋接 PTY 與瀏覽器。
+- **server** (`@tinyterm/server`): node-pty + WebSocket Server，橋接 PTY 與瀏覽器，以 Docker 容器運行（解決 macOS node-pty 原生模組隔離問題）。
 
 ### 3. 桌面擴充 (Planned: /packages/desktop)
 
@@ -47,8 +47,13 @@ tinyterm/
 │       │       ├── bridge.ts         # WebSocketBridge — 瀏覽器端 WebSocket 中繼
 │       │       └── index.ts
 │       └── server/             # @tinyterm/server — Node.js PTY Server
+│           ├── Dockerfile        # 編譯 node-pty 原生模組並執行 Server
+│           ├── .dockerignore
 │           └── src/
-│               └── server.ts         # node-pty + ws
+│               ├── server.ts         # node-pty + ws PTY Server
+│               └── security.ts       # Token 驗證、Rate Limiting、訊息驗證
+├── scripts/
+│   └── dev.sh              # 一鍵啟動開發環境（Build → Docker → Vite）
 ├── docs/
 │   └── specs/              # 各功能模組的實作規格文件
 ├── architecture.md         # 核心介面設計文件
@@ -59,25 +64,34 @@ tinyterm/
 ## 技術棧 (Tech Stack)
 
 - Language: TypeScript 6.0
-- Backend: Node.js, node-pty, ws (WebSocket)
+- Backend: Node.js, node-pty, ws (WebSocket), Docker
 - Frontend Logic: xterm.js (Headless) — `@xterm/headless`
 - Frontend View: HTML5 Canvas API
 - Package Manager: pnpm (workspace monorepo)
 
 ## 開發設定 (Development Setup)
 
+**前置需求：** Node.js 22+、pnpm、Docker
+
 ```bash
 # 安裝依賴
 pnpm install
 
-# 編譯所有套件
-pnpm build
+# 一鍵啟動開發環境（推薦）
+# 自動執行：TypeScript 編譯 → Docker 建置 → PTY Server → Vite Dev Server
+pnpm dev
+# 完成後開啟 http://localhost:5173，Ctrl+C 關閉所有服務
+```
 
-# 型別檢查
-pnpm typecheck
+伺服器以 Docker 容器運行（解決 macOS 上 node-pty quarantine 問題），並透過
+`127.0.0.1:3002` 的 WebSocket 提供服務。啟動後 Token 會寫入根目錄的
+`.tinyterm-token`（已加入 `.gitignore`），客戶端透過 URL query param 驗證身份。
 
-# 清除編譯產物
-pnpm clean
+```bash
+# 其他指令
+pnpm build       # 編譯所有套件
+pnpm typecheck   # 型別檢查
+pnpm clean       # 清除編譯產物
 ```
 
 ## 實作進度 (Development Roadmap)
@@ -88,7 +102,10 @@ pnpm clean
 - [x] 實作 `CanvasRenderer` 骨架（Canvas 字元繪製框架）
 - [x] 實作 `WebSocketBridge` 骨架（瀏覽器端 WebSocket）
 - [x] 建立 Node.js PTY Server 骨架（node-pty + ws）
-- [ ] 實作 PTY Server 完整功能（resize 同步、binary 支援）
+- [x] PTY Server resize 同步（JSON 控制幀獨立解析，避免噴入 Shell）
+- [x] Token 驗證、Rate Limiting、Idle Timeout 安全機制
+- [x] Docker 容器化 Server（解決 macOS node-pty native module 問題）
+- [ ] PTY binary 傳輸支援
 - [ ] 實作正確的 xterm 色彩提取（256色、24-bit RGB）
 - [ ] 完成 Canvas 渲染器（游標繪製、字型度量）
 - [ ] 效能優化：實作 Dirty Rectangles 局部更新機制

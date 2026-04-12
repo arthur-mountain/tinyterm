@@ -6,7 +6,7 @@ import { WebSocketBridge } from "./bridge.js";
 // Empty string when the server hasn't started yet (connection will be rejected).
 declare const __WS_TOKEN__: string;
 
-const WS_URL = "ws://localhost:3001";
+const WS_URL = "ws://127.0.0.1:3002";
 const FONT_FAMILY = "Menlo, Monaco, 'Courier New', monospace";
 const FONT_SIZE = 14;
 const COLS = 80;

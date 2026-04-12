@@ -47,3 +47,32 @@ export function validateMessage(raw: unknown): string | null {
   if (str.length > MAX_MESSAGE_SIZE) return null;
   return str;
 }
+
+const MAX_COLS = 500;
+const MAX_ROWS = 500;
+
+// Returns parsed resize dimensions only when the message is a well-formed resize
+// control frame. All other messages must be treated as raw shell input.
+export function parseResizeMessage(
+  msg: string,
+): { cols: number; rows: number } | null {
+  try {
+    const parsed: unknown = JSON.parse(msg);
+    if (
+      parsed !== null &&
+      typeof parsed === "object" &&
+      "type" in parsed && (parsed as Record<string, unknown>).type === "resize" &&
+      "cols" in parsed && typeof (parsed as Record<string, unknown>).cols === "number" &&
+      "rows" in parsed && typeof (parsed as Record<string, unknown>).rows === "number"
+    ) {
+      const { cols, rows } = parsed as { cols: number; rows: number };
+      if (
+        Number.isInteger(cols) && cols > 0 && cols <= MAX_COLS &&
+        Number.isInteger(rows) && rows > 0 && rows <= MAX_ROWS
+      ) {
+        return { cols, rows };
+      }
+    }
+  } catch { /* not JSON — treat as raw input */ }
+  return null;
+}

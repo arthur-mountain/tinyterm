@@ -15,6 +15,7 @@
     "xterm"
   ],
   "scripts": {
+    "dev": "bash scripts/dev.sh",
     "build": "pnpm -r run build",
     "clean": "pnpm -r run clean",
     "typecheck": "pnpm -r run typecheck",
