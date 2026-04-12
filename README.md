@@ -22,9 +22,8 @@
 
 ### 2. 表現層 (/packages/web)
 
-- Renderer: 實作高效的 Canvas Grid Rendering。
-- Bridge: 透過 WebSocket 與後端 PTY Server 同步數據。
-- Events: 處理 Web 環境下的鍵盤、滑鼠及縮放事件。
+- **client** (`@tinyterm/client`): Canvas Grid Rendering、WebSocket Bridge、鍵盤事件處理。
+- **server** (`@tinyterm/server`): node-pty + WebSocket Server，橋接 PTY 與瀏覽器。
 
 ### 3. 桌面擴充 (Planned: /packages/desktop)
 
@@ -40,13 +39,16 @@ tinyterm/
 │   │       ├── types.ts          # ITerminalCore, IRenderEvent, CellData, Range
 │   │       ├── terminal-core.ts  # TerminalCore 實作，封裝 @xterm/headless
 │   │       └── index.ts
-│   └── web/                # @tinyterm/web — Web 表現層
-│       └── src/
-│           ├── types.ts          # IRendererConfig, IBridgeConfig
-│           ├── renderer.ts       # CanvasRenderer — Canvas 字元矩陣渲染
-│           ├── bridge.ts         # WebSocketBridge — 瀏覽器端 WebSocket 中繼
-│           ├── server.ts         # PTY Server — node-pty + ws (獨立入口)
-│           └── index.ts
+│   └── web/
+│       ├── client/             # @tinyterm/client — 瀏覽器表現層
+│       │   └── src/
+│       │       ├── types.ts          # IRendererConfig, IBridgeConfig
+│       │       ├── renderer.ts       # CanvasRenderer — Canvas 字元矩陣渲染
+│       │       ├── bridge.ts         # WebSocketBridge — 瀏覽器端 WebSocket 中繼
+│       │       └── index.ts
+│       └── server/             # @tinyterm/server — Node.js PTY Server
+│           └── src/
+│               └── server.ts         # node-pty + ws
 ├── docs/
 │   └── specs/              # 各功能模組的實作規格文件
 ├── architecture.md         # 核心介面設計文件

@@ -2,7 +2,7 @@ import { TerminalCore } from "@tinyterm/core";
 import { CanvasRenderer } from "./renderer.js";
 import { WebSocketBridge } from "./bridge.js";
 
-const WS_URL = "ws://localhost:3000";
+const WS_URL = "ws://localhost:5173";
 const FONT_FAMILY = "Menlo, Monaco, 'Courier New', monospace";
 const FONT_SIZE = 14;
 const COLS = 80;
@@ -15,20 +15,34 @@ function keyEventToSequence(e: KeyboardEvent): string | null {
     if (code > 0 && code < 32) return String.fromCharCode(code);
   }
   switch (e.key) {
-    case "Enter": return "\r";
-    case "Backspace": return "\x7f";
-    case "Tab": return "\t";
-    case "Escape": return "\x1b";
-    case "ArrowUp": return "\x1b[A";
-    case "ArrowDown": return "\x1b[B";
-    case "ArrowRight": return "\x1b[C";
-    case "ArrowLeft": return "\x1b[D";
-    case "Home": return "\x1b[H";
-    case "End": return "\x1b[F";
-    case "Delete": return "\x1b[3~";
-    case "PageUp": return "\x1b[5~";
-    case "PageDown": return "\x1b[6~";
-    default: return null;
+    case "Enter":
+      return "\r";
+    case "Backspace":
+      return "\x7f";
+    case "Tab":
+      return "\t";
+    case "Escape":
+      return "\x1b";
+    case "ArrowUp":
+      return "\x1b[A";
+    case "ArrowDown":
+      return "\x1b[B";
+    case "ArrowRight":
+      return "\x1b[C";
+    case "ArrowLeft":
+      return "\x1b[D";
+    case "Home":
+      return "\x1b[H";
+    case "End":
+      return "\x1b[F";
+    case "Delete":
+      return "\x1b[3~";
+    case "PageUp":
+      return "\x1b[5~";
+    case "PageDown":
+      return "\x1b[6~";
+    default:
+      return null;
   }
 }
 

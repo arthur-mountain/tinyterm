@@ -13,12 +13,12 @@
  */
 interface ITerminalCore {
   // 1. 數據輸入輸出
-  write(data: string): void;            // 接收來自 PTY 的原始數據 (ANSI code)
+  write(data: string): void; // 接收來自 PTY 的原始數據 (ANSI code)
   onInput(callback: (data: string) => void): void; // 監聽用戶輸入，準備傳回 PTY
 
   // 2. 狀態管理
   resize(cols: number, rows: number): void;
-  getBufferChunk(range: Range): CellData[][];  // 供初次渲染或全量更新使用
+  getBufferChunk(range: Range): CellData[][]; // 供初次渲染或全量更新使用
 
   // 3. 渲染橋接 (核心優化關鍵)
   // 當 xterm.js 解析完數據，觸發此回調告訴 UI 哪些區域變動了
@@ -32,8 +32,8 @@ interface IRenderEvent {
 
 interface CellData {
   char: string;
-  fg: string;   // 前景色 (HEX/RGB)
-  bg: string;   // 背景色
+  fg: string; // 前景色 (HEX/RGB)
+  bg: string; // 背景色
   bold: boolean;
   italic: boolean;
   // ... 其他樣式屬性

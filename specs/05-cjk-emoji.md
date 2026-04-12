@@ -29,7 +29,7 @@ interface CellData {
   bg: string;
   bold: boolean;
   italic: boolean;
-  width: 1 | 2;   // 新增
+  width: 1 | 2; // 新增
 }
 ```
 
@@ -43,7 +43,7 @@ row.push({
   bg: resolveColor(cell.getBgColorMode(), cell.getBgColor(), "#000000"),
   bold: cell.isBold() !== 0,
   italic: cell.isItalic() !== 0,
-  width: cell.getWidth() as 1 | 2,  // 新增
+  width: cell.getWidth() as 1 | 2, // 新增
 });
 ```
 

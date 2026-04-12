@@ -12,11 +12,13 @@ packages/web/src/renderer.ts
 ```
 
 目前骨架已具備：
+
 - `measureCell()` — 用 `measureText("W")` 估算等寬字型的格寬（不精確）
 - `renderRows(startRow, endRow)` — 逐格繪製背景色 + 字元
 - `drawCell()` — 分別應用 bold/italic 字型樣式
 
 **缺失：**
+
 1. 游標繪製（目前完全沒有游標）
 2. 全畫面初次渲染入口（連線後第一次渲染整個 viewport）
 3. Canvas 尺寸未根據終端行列數動態設定
@@ -90,6 +92,7 @@ private renderCursor(): void {
 目前 `measureCell()` 使用 `measureText("W")` 估算，CJK 字元（如 `中`）實際寬度是兩倍。
 
 暫行方案（先跳過，見 spec 05）：
+
 - 對 CJK 字元以 `cell.getWidth() === 2` 判斷，繪製時佔用雙格寬度
 - `cellWidth` 仍以 ASCII 字元為基準
 

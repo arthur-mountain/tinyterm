@@ -12,12 +12,14 @@ packages/web/src/server.ts
 ```
 
 目前骨架已具備：
+
 - WebSocketServer 監聽 port 3000
 - `pty.spawn()` 啟動 shell
 - 雙向數據中繼：`shell.onData → ws.send`、`ws.on("message") → shell.write`
 - 連線關閉時 `shell.kill()`
 
 **缺失：**
+
 1. resize 訊息處理（終端尺寸不同步）
 2. 訊息格式未定義（目前 raw string，無法區分 data 與 control 訊息）
 3. 錯誤處理（shell crash、ws error）

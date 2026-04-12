@@ -11,8 +11,8 @@
 // packages/core/src/terminal-core.ts — getBufferChunk()
 row.push({
   char: cell.getChars() || " ",
-  fg: "#ffffff",  // 硬編碼，待實作
-  bg: "#000000",  // 硬編碼，待實作
+  fg: "#ffffff", // 硬編碼，待實作
+  bg: "#000000", // 硬編碼，待實作
   bold: cell.isBold() !== 0,
   italic: cell.isItalic() !== 0,
 });
@@ -22,11 +22,11 @@ row.push({
 
 xterm.js 的 `IBufferCell` 使用三種色彩模式（`ColorMode` enum）：
 
-| Mode | 值 | 說明 |
-|---|---|---|
-| `DEFAULT` | 0 | 使用終端預設色（fg: white, bg: black） |
-| `PALETTE_256` | 2 | 256 色 palette，`getFgColor()` 回傳 0–255 的 index |
-| `RGB` | 3 | 24-bit True Color，`getFgColor()` 回傳 packed integer `0xRRGGBB` |
+| Mode          | 值  | 說明                                                             |
+| ------------- | --- | ---------------------------------------------------------------- |
+| `DEFAULT`     | 0   | 使用終端預設色（fg: white, bg: black）                           |
+| `PALETTE_256` | 2   | 256 色 palette，`getFgColor()` 回傳 0–255 的 index               |
+| `RGB`         | 3   | 24-bit True Color，`getFgColor()` 回傳 packed integer `0xRRGGBB` |
 
 > `ColorMode` 未直接由 `@xterm/headless` 公開導出，需使用數字常數比對。
 
@@ -48,10 +48,22 @@ function buildPalette(): string[] {
 
   // 標準 16 色
   const ansi16 = [
-    "#000000", "#cc0000", "#4e9a06", "#c4a000",
-    "#3465a4", "#75507b", "#06989a", "#d3d7cf",
-    "#555753", "#ef2929", "#8ae234", "#fce94f",
-    "#729fcf", "#ad7fa8", "#34e2e2", "#eeeeec",
+    "#000000",
+    "#cc0000",
+    "#4e9a06",
+    "#c4a000",
+    "#3465a4",
+    "#75507b",
+    "#06989a",
+    "#d3d7cf",
+    "#555753",
+    "#ef2929",
+    "#8ae234",
+    "#fce94f",
+    "#729fcf",
+    "#ad7fa8",
+    "#34e2e2",
+    "#eeeeec",
   ];
   palette.push(...ansi16);
 
@@ -80,7 +92,11 @@ function toHex(r: number, g: number, b: number): string {
   return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
 }
 
-export function resolveColor(mode: number, value: number, isDefault: string): string {
+export function resolveColor(
+  mode: number,
+  value: number,
+  isDefault: string,
+): string {
   if (mode === COLOR_MODE_DEFAULT) return isDefault;
   if (mode === COLOR_MODE_PALETTE) return PALETTE_256[value] ?? isDefault;
   if (mode === COLOR_MODE_RGB) {

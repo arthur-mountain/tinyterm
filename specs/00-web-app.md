@@ -10,11 +10,13 @@
 ## 現狀 (Current State)
 
 `packages/web` 目前以 library 形式存在（`"main": "./dist/index.js"`），只有：
+
 - `CanvasRenderer` — 繪製 canvas
 - `WebSocketBridge` — 連接 WebSocket
 - `server.ts` — PTY server（Node.js）
 
 **缺失：**
+
 1. 無 HTML 頁面（無 `<canvas>` 容器）
 2. 無 browser entry point（無 `app.ts` 串接各 class）
 3. 無 bundler（TypeScript 直接 `tsc` 輸出 ESM 模組，瀏覽器無法直接 import `@tinyterm/core`）
@@ -24,6 +26,7 @@
 ## 技術選擇
 
 採用 **Vite** 作為 dev server + bundler：
+
 - 支援 TypeScript 零配置
 - 支援 pnpm workspace 的本地套件（`@tinyterm/core`）直接 import
 - `vite build` 輸出靜態資源，可直接部署
@@ -32,13 +35,13 @@
 
 ### Step 1：安裝 Vite
 
-在 `packages/web` 中加入 Vite：
+在 `packages/web/client` 中加入 Vite：
 
 ```bash
-pnpm --filter @tinyterm/web add -D vite
+pnpm --filter @tinyterm/client add -D vite
 ```
 
-更新 `packages/web/package.json` scripts：
+更新 `packages/web/client/package.json` scripts：
 
 ```json
 {
@@ -55,14 +58,18 @@ pnpm --filter @tinyterm/web add -D vite
 ### Step 2：建立 `public/index.html`
 
 ```html
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TinyTerm</title>
     <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
       body {
         background: #1a1a1a;
         display: flex;
@@ -168,8 +175,8 @@ export default defineConfig({
 
 ## 驗收條件
 
-- [ ] `pnpm --filter @tinyterm/web dev` 啟動 Vite dev server，瀏覽器開啟 `http://localhost:5173`
-- [ ] 同時啟動 PTY server：`pnpm --filter @tinyterm/web node dist/server.js`
+- [ ] `pnpm --filter @tinyterm/client dev` 啟動 Vite dev server，瀏覽器開啟 `http://localhost:5173`
+- [ ] 同時啟動 PTY server：`pnpm --filter @tinyterm/server serve`
 - [ ] Canvas 顯示於頁面中，點擊後可接收鍵盤輸入
 - [ ] 輸入指令（如 `ls`）後，PTY 輸出渲染至 canvas
 - [ ] 目前以白字黑底顯示（色彩待 spec 02 實作）
@@ -179,10 +186,10 @@ export default defineConfig({
 
 本 spec 完成後，後續 spec 的驗收才有瀏覽器環境可用：
 
-| Spec | 依賴本 spec 的原因 |
-|---|---|
-| 01 PTY Server | resize 訊息需要 bridge.resize() 觸發才能驗收 |
+| Spec                | 依賴本 spec 的原因                           |
+| ------------------- | -------------------------------------------- |
+| 01 PTY Server       | resize 訊息需要 bridge.resize() 觸發才能驗收 |
 | 02 Color Extraction | 需要實際 ANSI 輸出渲染到 canvas 才能目視驗收 |
-| 03 Canvas Renderer | 游標、尺寸調整需要完整 app 才能互動測試 |
-| 04 Dirty Rectangles | 效能優化需要在真實滾動情境下量測 |
-| 05 CJK/Emoji | 需要能輸入中文字元的終端機環境驗收 |
+| 03 Canvas Renderer  | 游標、尺寸調整需要完整 app 才能互動測試      |
+| 04 Dirty Rectangles | 效能優化需要在真實滾動情境下量測             |
+| 05 CJK/Emoji        | 需要能輸入中文字元的終端機環境驗收           |
