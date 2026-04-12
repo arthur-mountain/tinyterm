@@ -6,4 +6,5 @@ export interface IRendererConfig {
 
 export interface IBridgeConfig {
   url: string;
+  token?: string;
 }

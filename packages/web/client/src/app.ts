@@ -2,7 +2,11 @@ import { TerminalCore } from "@tinyterm/core";
 import { CanvasRenderer } from "./renderer.js";
 import { WebSocketBridge } from "./bridge.js";
 
-const WS_URL = "ws://localhost:5173";
+// Injected at build time by vite.config.ts from .tinyterm-token.
+// Empty string when the server hasn't started yet (connection will be rejected).
+declare const __WS_TOKEN__: string;
+
+const WS_URL = "ws://localhost:3001";
 const FONT_FAMILY = "Menlo, Monaco, 'Courier New', monospace";
 const FONT_SIZE = 14;
 const COLS = 80;
@@ -55,7 +59,7 @@ function main(): void {
     fontFamily: FONT_FAMILY,
     fontSize: FONT_SIZE,
   });
-  const bridge = new WebSocketBridge(core, { url: WS_URL });
+  const bridge = new WebSocketBridge(core, { url: WS_URL, token: __WS_TOKEN__ });
 
   core.onRenderRequest(({ startRow, endRow }) => {
     renderer.renderRows(startRow, endRow);

@@ -7,7 +7,8 @@
     "build": "tsc -b",
     "clean": "rm -rf dist *.tsbuildinfo",
     "typecheck": "tsc --noEmit",
-    "serve": "node dist/server.js"
+    "serve": "node dist/server.js",
+    "test": "vitest run"
   },
   "dependencies": {
     "node-pty": "^1.0.0",
@@ -15,6 +16,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
-    "@types/ws": "^8.5.0"
+    "@types/ws": "^8.5.0",
+    "vitest": "^4.1.4"
   }
 }

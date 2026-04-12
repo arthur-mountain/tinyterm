@@ -10,7 +10,10 @@ export class WebSocketBridge {
   ) {}
 
   connect(): void {
-    this.ws = new WebSocket(this.config.url);
+    const url = this.config.token
+      ? `${this.config.url}?token=${this.config.token}`
+      : this.config.url;
+    this.ws = new WebSocket(url);
 
     this.ws.addEventListener("message", (event) => {
       if (typeof event.data === "string") {
