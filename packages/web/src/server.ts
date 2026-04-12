@@ -1,8 +1,8 @@
 import { WebSocketServer } from "ws";
 import pty from "node-pty";
 
-const PORT = process.env["PORT"] ? parseInt(process.env["PORT"], 10) : 3000;
-const SHELL = process.env["SHELL"] ?? "/bin/bash";
+const PORT = process.env["PORT"] ? parseInt(process.env["PORT"], 10) : 5173;
+const SHELL = process.env["SHELL"] ?? "/bin/zsh";
 
 const wss = new WebSocketServer({ host: "127.0.0.1", port: PORT });
 
