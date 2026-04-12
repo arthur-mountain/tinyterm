@@ -16,7 +16,9 @@
     }
   },
   "scripts": {
-    "build": "tsc -b",
+    "dev": "vite",
+    "build": "vite build",
+    "build:lib": "tsc -b",
     "clean": "rm -rf dist *.tsbuildinfo",
     "typecheck": "tsc --noEmit"
   },
@@ -27,6 +29,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
-    "@types/ws": "^8.5.0"
+    "@types/ws": "^8.5.0",
+    "vite": "^8.0.8"
   }
 }

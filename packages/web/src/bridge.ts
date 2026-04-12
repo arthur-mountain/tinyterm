@@ -25,6 +25,19 @@ export class WebSocketBridge {
     });
   }
 
+  send(data: string): void {
+    if (this.ws?.readyState === WebSocket.OPEN) {
+      this.ws.send(data);
+    }
+  }
+
+  resize(cols: number, rows: number): void {
+    this.core.resize(cols, rows);
+    if (this.ws?.readyState === WebSocket.OPEN) {
+      this.ws.send(JSON.stringify({ type: "resize", cols, rows }));
+    }
+  }
+
   disconnect(): void {
     this.ws?.close();
     this.ws = null;
