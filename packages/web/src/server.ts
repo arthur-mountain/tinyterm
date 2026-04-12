@@ -1,10 +1,10 @@
 import { WebSocketServer } from "ws";
 import pty from "node-pty";
 
-const PORT = 3000;
+const PORT = process.env["PORT"] ? parseInt(process.env["PORT"], 10) : 3000;
 const SHELL = process.env["SHELL"] ?? "/bin/bash";
 
-const wss = new WebSocketServer({ port: PORT });
+const wss = new WebSocketServer({ host: "127.0.0.1", port: PORT });
 
 wss.on("connection", (ws) => {
   const shell = pty.spawn(SHELL, [], {

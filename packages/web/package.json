@@ -20,7 +20,8 @@
     "build": "vite build",
     "build:lib": "tsc -b",
     "clean": "rm -rf dist *.tsbuildinfo",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "serve": "node dist/server.js"
   },
   "dependencies": {
     "@tinyterm/core": "workspace:*",
