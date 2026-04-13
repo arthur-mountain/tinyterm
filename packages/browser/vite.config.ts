@@ -5,7 +5,7 @@ import { resolve } from "node:path";
 function readToken(): string {
   try {
     return readFileSync(
-      resolve(import.meta.dirname, "../../../.tinyterm-token"),
+      resolve(import.meta.dirname, "../../.tinyterm-token"),
       "utf-8",
     ).trim();
   } catch {

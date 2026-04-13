@@ -20,12 +20,15 @@
 - Agnostic Interface: 提供標準化 API，不依賴 DOM 或特定的 Node.js API。
 - Rendering Optimization: 實作 Dirty Rectangles (局部重繪) 機制，僅針對變動的字元區域進行繪製。
 
-### 2. 表現層 (/packages/web)
+### 2. 瀏覽器表現層 (/packages/browser)
 
-- **client** (`@tinyterm/client`): Canvas Grid Rendering、WebSocket Bridge、鍵盤事件處理。
-- **server** (`@tinyterm/server`): node-pty + WebSocket Server，橋接 PTY 與瀏覽器，以 Docker 容器運行（解決 macOS node-pty 原生模組隔離問題）。
+- `@tinyterm/browser`: Canvas Grid Rendering、WebSocket Bridge、鍵盤事件處理。
 
-### 3. 桌面擴充 (Planned: /packages/desktop)
+### 3. PTY 服務層 (/packages/server)
+
+- `@tinyterm/server`: node-pty + WebSocket Server，橋接 PTY 與任意 client，以 Docker 容器運行（解決 macOS node-pty 原生模組隔離問題）。
+
+### 4. 桌面擴充 (Planned: /packages/desktop)
 
 - 預計使用 Tauri/Electron 封裝，將 Web Provider 的渲染邏輯與本地 Rust/Node-PTY IPC 直接串接。
 
@@ -39,19 +42,18 @@ tinyterm/
 │   │       ├── types.ts          # ITerminalCore, IRenderEvent, CellData, Range
 │   │       ├── terminal-core.ts  # TerminalCore 實作，封裝 @xterm/headless
 │   │       └── index.ts
-│   └── web/
-│       ├── client/             # @tinyterm/client — 瀏覽器表現層
-│       │   └── src/
-│       │       ├── types.ts          # IRendererConfig, IBridgeConfig
-│       │       ├── renderer.ts       # CanvasRenderer — Canvas 字元矩陣渲染
-│       │       ├── bridge.ts         # WebSocketBridge — 瀏覽器端 WebSocket 中繼
-│       │       └── index.ts
-│       └── server/             # @tinyterm/server — Node.js PTY Server
-│           ├── Dockerfile        # 編譯 node-pty 原生模組並執行 Server
-│           ├── .dockerignore
-│           └── src/
-│               ├── server.ts         # node-pty + ws PTY Server
-│               └── security.ts       # Token 驗證、Rate Limiting、訊息驗證
+│   ├── browser/            # @tinyterm/browser — 瀏覽器表現層
+│   │   └── src/
+│   │       ├── types.ts          # IRendererConfig, IBridgeConfig
+│   │       ├── renderer.ts       # CanvasRenderer — Canvas 字元矩陣渲染
+│   │       ├── bridge.ts         # WebSocketBridge — 瀏覽器端 WebSocket 中繼
+│   │       └── index.ts
+│   └── server/             # @tinyterm/server — Node.js PTY Server
+│       ├── Dockerfile        # 編譯 node-pty 原生模組並執行 Server
+│       ├── .dockerignore
+│       └── src/
+│           ├── server.ts         # node-pty + ws PTY Server
+│           └── security.ts       # Token 驗證、Rate Limiting、訊息驗證
 ├── scripts/
 │   └── dev.sh              # 一鍵啟動開發環境（Build → Docker → Vite）
 ├── docs/

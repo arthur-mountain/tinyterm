@@ -1,4 +1,4 @@
 packages:
   - "packages/core"
-  - "packages/web/client"
-  - "packages/web/server"
+  - "packages/server"
+  - "packages/browser"

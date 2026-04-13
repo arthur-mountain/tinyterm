@@ -53,7 +53,7 @@ row.push({
 ### 3. `CanvasRenderer` 感知寬度
 
 ```typescript
-// packages/web/src/renderer.ts
+// packages/browser/src/renderer.ts
 private drawCell(cell: CellData, x: number, y: number): void {
   const actualWidth = this.cellWidth * cell.width;
 
@@ -75,7 +75,7 @@ private drawCell(cell: CellData, x: number, y: number): void {
 多數 Emoji 需要 emoji-capable 字型。建議在 `IRendererConfig` 加入 fallback：
 
 ```typescript
-// packages/web/src/renderer.ts — measureCell() 與 drawCell()
+// packages/browser/src/renderer.ts — measureCell() 與 drawCell()
 private get fontStack(): string {
   return `${this.fontFamily}, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji"`;
 }

@@ -12,23 +12,23 @@ importers:
         specifier: ^6.0.0
         version: 6.0.2
 
+  packages/browser:
+    dependencies:
+      '@tinyterm/core':
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      vite:
+        specifier: ^8.0.8
+        version: 8.0.8(@types/node@22.19.17)
+
   packages/core:
     dependencies:
       '@xterm/headless':
         specifier: ^5.5.0
         version: 5.5.0
 
-  packages/web/client:
-    dependencies:
-      '@tinyterm/core':
-        specifier: workspace:*
-        version: link:../../core
-    devDependencies:
-      vite:
-        specifier: ^8.0.8
-        version: 8.0.8(@types/node@22.19.17)
-
-  packages/web/server:
+  packages/server:
     dependencies:
       node-pty:
         specifier: ^1.0.0

@@ -2,13 +2,13 @@
 
 ## 目標
 
-完成 `packages/web/src/renderer.ts` 的 `CanvasRenderer`，加入游標繪製、
+完成 `packages/browser/src/renderer.ts` 的 `CanvasRenderer`，加入游標繪製、
 精確字型度量，以及完整的初次渲染（full render）流程。
 
 ## 現狀 (Current State)
 
 ```
-packages/web/src/renderer.ts
+packages/browser/src/renderer.ts
 ```
 
 目前骨架已具備：

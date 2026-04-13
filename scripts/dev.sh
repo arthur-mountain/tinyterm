@@ -27,7 +27,7 @@ echo "[1/4] Building server TypeScript..."
 pnpm --filter @tinyterm/server build
 
 echo "[2/4] Building Docker image (uses layer cache when unchanged)..."
-docker build -t "$IMAGE" -f packages/web/server/Dockerfile .
+docker build -t "$IMAGE" -f packages/server/Dockerfile .
 
 echo "[3/4] Starting PTY server (Docker)..."
 docker run --rm \
@@ -44,7 +44,7 @@ done
 [ -s "$TOKEN_PATH" ] || { echo "Error: server did not write token in time"; exit 1; }
 
 echo "[4/4] Starting Vite dev server..."
-pnpm --filter @tinyterm/client dev &
+pnpm --filter @tinyterm/browser dev &
 VITE_PID=$!
 
 echo "Ready → http://localhost:5173   Ctrl+C to stop all."
